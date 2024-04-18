@@ -75,29 +75,29 @@
     </div>
 
     <?php
-        // Function to determine the profile link based on where the username exists
-        function getProfileLink() {
-            if (isset($_SESSION['username'])) {
-                $uname = $_SESSION['username'];
-                $con = mysqli_connect("localhost", "root", "", "finalerd");
-        
-                // Check if the username has a corresponding student ID in the student_account table
-                $student_query = "SELECT * FROM student_account WHERE username='$uname'";
-                $student_result = mysqli_query($con, $student_query);
-                $student_count = mysqli_num_rows($student_result);
-        
-                // Close connection
-                mysqli_close($con);
-        
-                if ($student_count == 1) {
-                    return 'Student Edit.php';
-                } else {
-                    return 'Drivers Edit.php';
-                }
-            }
-            // Default to home page if username is not set
-            return '#';
+// Function to determine the profile link based on where the username exists
+function getProfileLink() {
+    if (isset($_SESSION['username'])) {
+        $uname = $_SESSION['username'];
+        $con = mysqli_connect("localhost", "root", "", "finalerd");
+
+        // Check if the username has a corresponding student ID in the student_account table
+        $student_query = "SELECT * FROM student_account WHERE username='$uname'";
+        $student_result = mysqli_query($con, $student_query);
+        $student_count = mysqli_num_rows($student_result);
+
+        // Close connection
+        mysqli_close($con);
+
+        if ($student_count == 1) {
+            return 'Student/Student Edit.php'; // Updated path for Student folder
+        } else {
+            return 'Driver/Drivers Edit.php'; // Updated path for Driver folder
         }
-    ?>
+    }
+    // Default to home page if username is not set
+    return '#';
+}
+?>
 </body>
 </html>
