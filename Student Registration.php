@@ -26,7 +26,8 @@
         }
 
         input[type="text"],
-        input[type="password"] {
+        input[type="password"],
+        input[type="email"] {
             width: 100%;
             padding: 10px;
             margin-bottom: 10px;
@@ -63,7 +64,7 @@
 </head>
 <body>
     <h1>Student Registration</h1>
-    <form method="post" action="Student Registration">
+    <form method="post" action="Student Registration.php">
         <input type="text" name="txtStudentID" placeholder="Student ID" required>
         <input type="text" name="txtFirstName" placeholder="First Name" required>
         <input type="text" name="txtLastName" placeholder="Last Name" required>
@@ -79,44 +80,49 @@
 </body>
 </html>
 <?php
-    session_start();
-    $con = mysqli_connect("localhost", "root", "", "finalerd");
-    
-    if(isset($_POST['btnRegister'])){
-        $studentID = $_POST['txtStudentID'];
-        $firstName = $_POST['txtFirstName'];
-        $lastName = $_POST['txtLastName'];
-        $number = $_POST['txtNumber'];
-        $email = $_POST['txtEmail'];
-        $uname = $_POST['txtUname'];
-        $pwd = $_POST['txtPwd'];
-        
-        // Check if username already exists
-        $check_query = "SELECT * FROM student_account WHERE username='$uname'";
-        $check_result = mysqli_query($con, $check_query);
-        $count = mysqli_num_rows($check_result);
-        
-        if($count > 0) {
+session_start();
+$con = mysqli_connect("localhost", "root", "", "finalerd");
+
+if(mysqli_connect_errno()) {
+    echo "Failed to connect to MySQL: " . mysqli_connect_error();
+}
+
+if(isset($_POST['btnRegister'])){
+    $studentID = $_POST['txtStudentID'];
+    $firstName = $_POST['txtFirstName'];
+    $lastName = $_POST['txtLastName'];
+    $number = $_POST['txtNumber'];
+    $email = $_POST['txtEmail'];
+    $uname = $_POST['txtUname'];
+    $pwd = $_POST['txtPwd'];
+
+    // Check if username already exists
+    $check_query = "SELECT * FROM student_account WHERE username='$uname'";
+    $check_result = mysqli_query($con, $check_query);
+    $count = mysqli_num_rows($check_result);
+
+    if($count > 0) {
+        echo "<script language='javascript'>
+                alert('Username already exists. Please choose another one.');
+                window.location.href = 'Student Registration.php'; 
+            </script>";
+    } else {
+        // Insert new user into the database
+        $insert_query = "INSERT INTO student_account (student_id, first_name, last_name, number, email, username, password) 
+                         VALUES ('$studentID', '$firstName', '$lastName', '$number', '$email', '$uname', '$pwd')";
+        if(mysqli_query($con, $insert_query)) {
             echo "<script language='javascript'>
-                    alert('Username already exists. Please choose another one.');
-                    window.location.href = 'student_register.php';
+                    alert('Registration successful. You can now login.');
+                    window.location.href = 'Student Login.php'; 
                 </script>";
         } else {
-            // Insert new user into the database
-            $insert_query = "INSERT INTO student_account (student_id, first_name, last_name, number, email, username, password) 
-                             VALUES ('$studentID', '$firstName', '$lastName', '$number', '$email', '$uname', '$pwd')";
-            if(mysqli_query($con, $insert_query)) {
-                echo "<script language='javascript'>
-                        alert('Registration successful. You can now login.');
-                        window.location.href = 'Drivers Login.php';
-                    </script>";
-            } else {
-                echo "<script language='javascript'>
-                        alert('Error in registration. Please try again.');
-                        window.location.href = 'Student Registration.php';
-                    </script>";
-            }
+            echo "<script language='javascript'>
+                    alert('Error in registration. Please try again.');
+                    window.location.href = 'Student Registration.php'; 
+                </script>";
         }
     }
+}
 ?>
+
 

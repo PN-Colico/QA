@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Driver's Login</title>
+	<title>Student Login</title>
 	<style>
 		body {
 			font-family: Arial, sans-serif;

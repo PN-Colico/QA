@@ -81,46 +81,47 @@
 </body>
 </html>
 <?php
-    session_start();
-    $con = mysqli_connect("localhost", "root", "", "finalerd");
-    
-    if(isset($_POST['btnRegister'])){
-        $uname = $_POST['txtUname'];
-        $pwd = $_POST['txtPwd'];
-        $firstName = $_POST['txtFirstName'];
-        $middleName = $_POST['txtMiddleName'];
-        $lastName = $_POST['txtLastName'];
-        $university = $_POST['txtUniversity'];
-        $license = $_POST['txtLicense'];
-        $licensePlate = $_POST['txtLicensePlate'];
-        $yearsOfService = $_POST['txtYearsOfService'];
-        
-        // Check if username already exists
-        $check_query = "SELECT * FROM account WHERE username='$uname'";
-        $check_result = mysqli_query($con, $check_query);
-        $count = mysqli_num_rows($check_result);
-        
-        if($count > 0) {
+session_start();
+$con = mysqli_connect("localhost", "root", "", "finalerd");
+
+if(isset($_POST['btnRegister'])){
+    $uname = $_POST['txtUname'];
+    $pwd = $_POST['txtPwd'];
+    $firstName = $_POST['txtFirstName'];
+    $middleName = $_POST['txtMiddleName'];
+    $lastName = $_POST['txtLastName'];
+    $university = $_POST['txtUniversity'];
+    $license = $_POST['txtLicense'];
+    $licensePlate = $_POST['txtLicensePlate'];
+    $yearsOfService = $_POST['txtYearsOfService'];
+
+    // Check if username already exists
+    $check_query = "SELECT * FROM account WHERE username='$uname'";
+    $check_result = mysqli_query($con, $check_query);
+    $count = mysqli_num_rows($check_result);
+
+    if($count > 0) {
+        echo "<script language='javascript'>
+                alert('Username already exists. Please choose another one.');
+                window.location.href = 'Drivers Registration.php';
+            </script>";
+    } else {
+        // Insert new user into the database
+        $insert_query = "INSERT INTO account (username, password, first_name, middle_name, last_name, university_name, driver_license, license_plate, years_of_service) 
+                         VALUES ('$uname', '$pwd', '$firstName', '$middleName', '$lastName', '$university', '$license', '$licensePlate', '$yearsOfService')";
+        if(mysqli_query($con, $insert_query)) {
             echo "<script language='javascript'>
-                    alert('Username already exists. Please choose another one.');
-                    window.location.href = 'Drivers Registration.php';
+                    alert('Registration successful. You can now login.');
+                    window.location.href = 'Drivers Login.php';
                 </script>";
         } else {
-            // Insert new user into the database
-            $insert_query = "INSERT INTO account (username, password, first_name, middle_name, last_name, university_name, driver_license, license_plate, years_of_service) 
-                             VALUES ('$uname', '$pwd', '$firstName', '$middleName', '$lastName', '$university', '$license', '$licensePlate', '$yearsOfService')";
-            if(mysqli_query($con, $insert_query)) {
-                echo "<script language='javascript'>
-                        alert('Registration successful. You can now login.');
-                        window.location.href = 'Drivers Login.php';
-                    </script>";
-            } else {
-                echo "<script language='javascript'>
-                        alert('Error in registration. Please try again.');
-                        window.location.href = 'Drivers Registration.php';
-                    </script>";
-            }
+            echo "<script language='javascript'>
+                    alert('Error in registration. Please try again.');
+                    window.location.href = 'Drivers Registration.php';
+                </script>";
         }
     }
+}
 ?>
+
 
