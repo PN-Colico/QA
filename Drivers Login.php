@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Student Login</title>
+	<title>Driver's Login</title>
 	<style>
 		body {
 			font-family: Arial, sans-serif;
@@ -93,7 +93,7 @@
 			
 			if($pwd == $row[1]){
 				$_SESSION['username'] = $row['username'];
-				header("location: Landing Page.php");
+				header("location: Drivers Edit.php");
 			}
 			else
 				echo "<script language='javascript'>

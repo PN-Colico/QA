@@ -117,7 +117,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <input type="password" name="txtPwd" placeholder="Password" required> 
         <input type="submit" name="btnLogin" value="Login">
         <div class="register-link">
-            <a href="Driver/Drivers Registration.php">Register Here as Driver</a> <a href="Student/Student Registration.php">Register Here as Student</a>
+            <a href="Drivers Registration.php">Register Here as Driver</a> <a href="Student Registration.php">Register Here as Student</a>
         </div>
     </form>
 </body>

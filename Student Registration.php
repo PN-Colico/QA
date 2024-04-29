@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Driver Registration</title>
+    <title>Student Registration</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -26,7 +26,8 @@
         }
 
         input[type="text"],
-        input[type="password"] {
+        input[type="password"],
+        input[type="email"] {
             width: 100%;
             padding: 10px;
             margin-bottom: 10px;
@@ -62,20 +63,18 @@
     </style>
 </head>
 <body>
-    <h1>Driver Registration</h1>
-    <form method="post" action="Drivers Registration.php">
+    <h1>Student Registration</h1>
+    <form method="post" action="Student Registration.php">
+        <input type="text" name="txtStudentID" placeholder="Student ID" required>
+        <input type="text" name="txtFirstName" placeholder="First Name" required>
+        <input type="text" name="txtLastName" placeholder="Last Name" required>
+        <input type="text" name="txtNumber" placeholder="Phone Number" required>
+        <input type="email" name="txtEmail" placeholder="Email" required>
         <input type="text" name="txtUname" placeholder="Username" required>
         <input type="password" name="txtPwd" placeholder="Password" required>
-        <input type="text" name="txtFirstName" placeholder="First Name" required>
-        <input type="text" name="txtMiddleName" placeholder="Middle Name">
-        <input type="text" name="txtLastName" placeholder="Last Name" required>
-        <input type="text" name="txtUniversity" placeholder="University Name" required>
-        <input type="text" name="txtLicense" placeholder="Driver's License" required>
-        <input type="text" name="txtLicensePlate" placeholder="License Plate" required>
-        <input type="number" name="txtYearsOfService" placeholder="Years of Service" required>
         <input type="submit" name="btnRegister" value="Register">
         <div class="login-link">
-            <a href="Drivers Login.php">Already have an account? Login here</a>
+            <a href="Student Login.php">Already have an account? Login here</a>
         </div>
     </form>
 </body>
@@ -84,40 +83,42 @@
 session_start();
 $con = mysqli_connect("localhost", "root", "", "finalerd");
 
+if(mysqli_connect_errno()) {
+    echo "Failed to connect to MySQL: " . mysqli_connect_error();
+}
+
 if(isset($_POST['btnRegister'])){
+    $studentID = $_POST['txtStudentID'];
+    $firstName = $_POST['txtFirstName'];
+    $lastName = $_POST['txtLastName'];
+    $number = $_POST['txtNumber'];
+    $email = $_POST['txtEmail'];
     $uname = $_POST['txtUname'];
     $pwd = $_POST['txtPwd'];
-    $firstName = $_POST['txtFirstName'];
-    $middleName = $_POST['txtMiddleName'];
-    $lastName = $_POST['txtLastName'];
-    $university = $_POST['txtUniversity'];
-    $license = $_POST['txtLicense'];
-    $licensePlate = $_POST['txtLicensePlate'];
-    $yearsOfService = $_POST['txtYearsOfService'];
 
     // Check if username already exists
-    $check_query = "SELECT * FROM account WHERE username='$uname'";
+    $check_query = "SELECT * FROM student_account WHERE username='$uname'";
     $check_result = mysqli_query($con, $check_query);
     $count = mysqli_num_rows($check_result);
 
     if($count > 0) {
         echo "<script language='javascript'>
                 alert('Username already exists. Please choose another one.');
-                window.location.href = 'Drivers Registration.php';
+                window.location.href = 'Student Registration.php'; 
             </script>";
     } else {
         // Insert new user into the database
-        $insert_query = "INSERT INTO account (username, password, first_name, middle_name, last_name, university_name, driver_license, license_plate, years_of_service) 
-                         VALUES ('$uname', '$pwd', '$firstName', '$middleName', '$lastName', '$university', '$license', '$licensePlate', '$yearsOfService')";
+        $insert_query = "INSERT INTO student_account (student_id, first_name, last_name, number, email, username, password) 
+                         VALUES ('$studentID', '$firstName', '$lastName', '$number', '$email', '$uname', '$pwd')";
         if(mysqli_query($con, $insert_query)) {
             echo "<script language='javascript'>
                     alert('Registration successful. You can now login.');
-                    window.location.href = 'Drivers Login.php';
+                    window.location.href = 'Student Login.php'; 
                 </script>";
         } else {
             echo "<script language='javascript'>
                     alert('Error in registration. Please try again.');
-                    window.location.href = 'Drivers Registration.php';
+                    window.location.href = 'Student Registration.php'; 
                 </script>";
         }
     }
