@@ -7,6 +7,12 @@ if (!isset($_SESSION['username'])) {
     exit;
 }
 
+if (!isset($_SESSION['student_id'])) {
+    // Redirect to login page, or handle as appropriate
+    header('Location: Student Login.php');
+    exit();
+}
+
 // Connect to the database
 $con = mysqli_connect("localhost", "root", "", "finalerd");
 
@@ -60,12 +66,15 @@ if(isset($_POST['update'])) {
 
 // Handle delete
 if(isset($_POST['delete'])) {
-    $deleteSql = "DELETE FROM student_account WHERE username = '$username'";
-    if(mysqli_query($con, $deleteSql)) {
+    $deleteSql = $con->prepare("DELETE FROM student_account WHERE username=?");
+    $deleteSql->bind_param("s", $username);
+    if($deleteSql->execute()) {
+        session_destroy(); // Destroy session and log user out
         echo "<script>alert('Account deleted.'); window.location.href = 'Student Login.php';</script>";
     } else {
         echo "<script>alert('Deletion failed.');</script>";
     }
+    $deleteSql->close();
 }
 
 // Close the database connection
@@ -215,6 +224,7 @@ input[type="submit"]:hover, .button:hover {
         <div class="section-header">User Information</div>
         <?php if (isset($row)): ?>
         <form method="post">
+        <input type="text" name="student_id" value="<?php echo $row['student_id']; ?>" required>
             <input type="text" name="first_name" value="<?php echo $row['first_name']; ?>" required>
             <input type="text" name="last_name" value="<?php echo $row['last_name']; ?>" required>
             <input type="text" name="number" value="<?php echo $row['number']; ?>" required>

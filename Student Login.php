@@ -73,32 +73,43 @@
 </body>
 </html>
 <?php
-	session_start();
-	$con = mysqli_connect("localhost", "root", "", "finalerd");
-	
-	if(isset($_POST['btnLogin'])){
-		$uname = $_POST['txtUname'];
-		$pwd = $_POST['txtPwd'];
-		
-		$sql = "SELECT * FROM account WHERE username='$uname'";
-		$result = mysqli_query($con, $sql);
-		$count = mysqli_num_rows($result);
-		
-		if($count == 0)
-			echo "<script language='javascript'>
-					alert('Username does not exist.');
-				</script>";
-		else if($count == 1){
-			$row = mysqli_fetch_array($result);  
-			
-			if($pwd == $row[1]){
-				$_SESSION['username'] = $row['username'];
-				header("location: Student Edit.php");
-			}
-			else
-				echo "<script language='javascript'>
-						alert('Incorrect password');
-					</script>";
-		}
-	}
+session_start();
+$con = mysqli_connect("localhost", "root", "", "finalerd");
+
+if (!$con) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+
+if (isset($_POST['btnLogin'])) {
+    $uname = mysqli_real_escape_string($con, $_POST['txtUname']);
+    $pwd = mysqli_real_escape_string($con, $_POST['txtPwd']);  // Secure password handling
+
+    $sql = "SELECT * FROM student_account WHERE username=?";
+    $stmt = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($stmt, "s", $uname);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $count = mysqli_num_rows($result);
+
+    if ($count == 0) {
+        echo "<script language='javascript'>
+                alert('Username does not exist.');
+              </script>";
+    } else {
+        $row = mysqli_fetch_assoc($result);  // Fetch associative array
+
+        if ($pwd == $row['password']) {  // This should ideally use password_verify() if passwords are hashed
+            $_SESSION['username'] = $row['username'];
+            $_SESSION['student_id'] = $row['student_id'];  // Store student_id in session
+            header("location: Student Edit.php");
+            exit();  // Make sure to call exit after headers to avoid further script execution
+        } else {
+            echo "<script language='javascript'>
+                    alert('Incorrect password');
+                  </script>";
+        }
+    }
+    mysqli_stmt_close($stmt);
+}
 ?>
+
